@@ -1,0 +1,333 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.lebowski-logo {
+  height: 12em;
+  padding: 1em;
+  will-change: filter;
+  transition: all 300ms;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: grayscale(80%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.lebowski-logo:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+.card {
+  padding: 1.5em;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.read-the-docs {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* Stopwatch specific styling */
+.stopwatch-display {
+  font-size: 3.5rem;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-weight: 300;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.05em;
+}
+
+.stopwatch-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* Time records styling */
+.time-records {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.time-records h2 {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.time-records ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.time-records li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-records li:last-child {
+  border-bottom: none;
+}
+
+.record-main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.record-time {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400;
+}
+
+.record-date {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.record-thought {
+  margin-top: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid rgba(156, 39, 176, 0.5);
+}
+
+.thought-label {
+  font-size: 0.7rem;
+  color: #9c27b0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.thought-content {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.no-records {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+.clear-records-btn {
+  margin-top: 1rem;
+  background-color: #f44336;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+/* Custom scrollbar for time records */
+.time-records ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.time-records ul::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.time-records ul::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.time-records ul::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.thought-modal {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thought-modal h2 {
+  margin-top: 0;
+  font-weight: 300;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #9c27b0;
+}
+
+.thought-modal textarea {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  resize: none;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.3s;
+}
+
+.thought-modal textarea:focus {
+  outline: none;
+  border-color: #9c27b0;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.modal-cancel-btn {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-submit-btn {
+  background-color: #9c27b0;
+}
+
+@media (max-width: 600px) {
+  .thought-modal {
+    padding: 1.5rem;
+  }
+  
+  .modal-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .modal-buttons button {
+    width: 100%;
+  }
+}
+
+/* Analytics panel styling */
+.analytics-panel {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.analytics-panel h2 {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.analytics-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.analytics-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.analytics-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.analytics-value {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.mood-positive {
+  color: #4caf50;
+}
+
+.mood-negative {
+  color: #f44336;
+}
+
+.mood-neutral {
+  color: #ff9800;
+}
+
+.word-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.word-item {
+  color: #9c27b0;
+  font-weight: 400;
+  transition: all 0.3s;
+}
+
+.word-item:hover {
+  transform: scale(1.1);
+  opacity: 1 !important;
+}
