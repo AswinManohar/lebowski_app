@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import time
 from datetime import datetime
+from uuid import uuid4
 
 app = FastAPI()
 
@@ -25,6 +26,7 @@ class StopwatchState:
         self.is_running = False
         self.time_records = []  # List to store elapsed times
         self.thoughts = []  # List to store user thoughts
+        self.tasks = []  # List to store tasks
 
 # Initialize stopwatch
 stopwatch = StopwatchState()
@@ -58,12 +60,27 @@ class TimeRecord(BaseModel):
 class TimeRecordsResponse(BaseModel):
     records: List[TimeRecord]
 
+class Task(BaseModel):
+    id: str
+    content: str
+    status: str
+
+class TaskRequest(BaseModel):
+    content: str
+    status: str
+
+class TaskStatusRequest(BaseModel):
+    status: str
+
+class TasksResponse(BaseModel):
+    tasks: List[Task]
+
 # Helper function to format time
 def format_time(seconds):
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
-    seconds = seconds % 60
-    return f"{hours:02d}:{minutes:02d}{seconds:06.3f}"
+    seconds = int(seconds % 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 @app.get("/")
 async def root():
@@ -161,7 +178,38 @@ async def add_thought(thought_request: ThoughtRequest):
     
     return {"message": "Record not found"}, 404
 
+@app.get("/api/tasks", response_model=TasksResponse)
+async def get_tasks():
+    return {
+        "tasks": stopwatch.tasks
+    }
 
+@app.post("/api/tasks")
+async def create_task(task_request: TaskRequest):
+    task_id = str(uuid4())
+    new_task = {
+        "id": task_id,
+        "content": task_request.content,
+        "status": task_request.status
+    }
+    stopwatch.tasks.append(new_task)
+    return new_task
+
+@app.put("/api/tasks/{task_id}/status")
+async def update_task_status(task_id: str, status_request: TaskStatusRequest):
+    for task in stopwatch.tasks:
+        if task["id"] == task_id:
+            task["status"] = status_request.status
+            return {"message": "Task status updated"}
+    return {"message": "Task not found"}, 404
+
+@app.delete("/api/tasks/{task_id}")
+async def delete_task(task_id: str):
+    for i, task in enumerate(stopwatch.tasks):
+        if task["id"] == task_id:
+            stopwatch.tasks.pop(i)
+            return {"message": "Task deleted"}
+    return {"message": "Task not found"}, 404
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

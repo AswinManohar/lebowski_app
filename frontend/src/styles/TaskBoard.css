@@ -1,0 +1,235 @@
+.task-board {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f3e6;
+  min-height: 100vh;
+}
+
+.task-board h1 {
+  text-align: center;
+  color: #5d4037;
+  margin-bottom: 2rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.columns-container {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .columns-container {
+    flex-direction: column;
+  }
+}
+
+.column {
+  flex: 1;
+  background-color: #fff9ea;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e6d9c0;
+  display: flex;
+  flex-direction: column;
+}
+
+.column h2 {
+  margin-top: 0;
+  color: #5d4037;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.task-list {
+  flex: 1;
+  min-height: 300px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem 1rem 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e6d9c0;
+  transition: background-color 0.2s;
+  list-style-type: none;
+}
+
+.task-list.dragging-over {
+  background-color: #f5f0e5;
+}
+
+.task-item {
+  position: relative;
+  background-color: transparent;
+  padding: 0.7rem 0.5rem 0.7rem 1.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: all 0.2s;
+  border: none;
+  box-shadow: none;
+  text-align: left;
+  border-bottom: none;
+}
+
+.task-item:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #000000;
+  font-size: 1.2rem;
+}
+
+.task-item.dragging {
+  background-color: #f5f0e5;
+  border-radius: 4px;
+}
+
+.task-content {
+  flex: 1;
+  color: #000000;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  text-align: left;
+  padding-right: 1rem;
+}
+
+.delete-task-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: color 0.2s;
+  opacity: 0;
+}
+
+.task-item:hover .delete-task-btn {
+  opacity: 1;
+}
+
+.delete-task-btn:hover {
+  color: #f44336;
+}
+
+.add-task-btn {
+  background-color: white;
+  color: #8d6e63;
+  border: 1px solid #e6d9c0;
+  border-radius: 25px;
+  padding: 0.6rem 1rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.add-task-btn:hover {
+  background-color: #f5f0e5;
+}
+
+.add-task-form {
+  margin-top: 0.5rem;
+}
+
+.add-task-form input {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #e6d9c0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  box-sizing: border-box;
+}
+
+.add-task-form input:focus {
+  outline: none;
+  border-color: #8d6e63;
+  box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
+}
+
+.add-task-buttons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.add-task-submit, .add-task-cancel {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 25px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-task-submit {
+  background-color: #8d6e63;
+  color: white;
+  border: none;
+}
+
+.add-task-submit:hover {
+  background-color: #6d4c41;
+}
+
+.add-task-cancel {
+  background-color: white;
+  color: #5d4037;
+  border: 1px solid #e6d9c0;
+}
+
+.add-task-cancel:hover {
+  background-color: #f5f0e5;
+}
+
+.board-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.back-btn {
+  background-color: white;
+  color: #5d4037;
+  border: 1px solid #e6d9c0;
+  border-radius: 25px;
+  padding: 0.8rem 1.5rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #8d6e63;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+} 

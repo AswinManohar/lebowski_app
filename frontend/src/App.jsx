@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
+import Plant3D from './components/Plant3D'
+import { Link } from 'react-router-dom'
 
 function App() {
   const [time, setTime] = useState('00:00:00.000')
@@ -10,8 +12,6 @@ function App() {
   const [showThoughtModal, setShowThoughtModal] = useState(false)
   const [currentThought, setCurrentThought] = useState('')
   const [currentRecordId, setCurrentRecordId] = useState(null)
-  const [showAnalytics, setShowAnalytics] = useState(false)
-  const [analytics, setAnalytics] = useState(null)
   const thoughtInputRef = useRef(null)
 
   const API_URL = 'http://localhost:8000'
@@ -68,29 +68,6 @@ function App() {
     }
   }
 
-  // Fetch thought analytics
-  const fetchAnalytics = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/stopwatch/thoughts/analytics`)
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      const data = await response.json()
-      setAnalytics(data)
-    } catch (error) {
-      console.error('Error fetching analytics:', error)
-      setError('Failed to fetch thought analytics')
-    }
-  }
-
-  // Toggle analytics view
-  const toggleAnalytics = async () => {
-    if (!showAnalytics) {
-      await fetchAnalytics()
-    }
-    setShowAnalytics(!showAnalytics)
-  }
-
   // Start the stopwatch
   const handleStart = async () => {
     try {
@@ -130,7 +107,7 @@ function App() {
       if (recordsResponse.ok) {
         const recordsData = await recordsResponse.json()
         if (recordsData.records.length > 0) {
-          const latestRecord = recordsData.records[0] // Records are now ordered by DESC
+          const latestRecord = recordsData.records[recordsData.records.length - 1]
           setCurrentRecordId(latestRecord.id)
           setShowThoughtModal(true)
         }
@@ -168,7 +145,6 @@ function App() {
         throw new Error('Network response was not ok')
       }
       setTimeRecords([])
-      setAnalytics(null)
     } catch (error) {
       console.error('Error clearing time records:', error)
       setError('Failed to clear time records')
@@ -243,159 +219,149 @@ function App() {
     }
   }, [isRunning])
 
+  // Calculate total seconds from all records for plant growth
+  const calculateTotalSeconds = () => {
+    if (!timeRecords || timeRecords.length === 0) return 0;
+    return timeRecords.reduce((total, record) => total + record.elapsed_time, 0);
+  };
+
   return (
-    <>
-      <div>
-        <img 
-          src="https://i.imgur.com/TJZJ8xS.jpeg" 
-          className="lebowski-logo" 
-          alt="The Big Lebowski" 
-        />
-      </div>
-      <h1>THE DUDE'S STOPWATCH</h1>
+    <div className="App">
+      <header className="App-header">
+        <h1>Lebowski Stopwatch</h1>
+      </header>
       
-      <div className="card">
-        {error && <div className="error-message">{error}</div>}
-        <div className="stopwatch-display">{time}</div>
-        <div className="stopwatch-controls">
-          {!isRunning ? (
-            <button onClick={handleStart}>
-              START
-            </button>
-          ) : (
-            <button onClick={handleStop} style={{ backgroundColor: '#f44336' }}>
-              STOP
-            </button>
-          )}
-          <button onClick={handleReset} style={{ backgroundColor: '#2196F3' }}>
-            RESET
-          </button>
-          <button onClick={toggleRecords} style={{ backgroundColor: '#9c27b0' }}>
-            {showRecords ? 'HIDE TIMES' : 'SHOW TIMES'}
-          </button>
-          <button onClick={toggleAnalytics} style={{ backgroundColor: '#ff9800' }}>
-            {showAnalytics ? 'HIDE INSIGHTS' : 'INSIGHTS'}
-          </button>
+      <div className="main-layout">
+        {/* New Navigation Panel */}
+        <div className="nav-panel">
+          <h3>Navigation</h3>
+          <div className="nav-buttons">
+            <Link to="/" className="nav-btn active">
+              STOPWATCH
+            </Link>
+            <Link to="/tasks" className="nav-btn">
+              TASK BOARD
+            </Link>
+            {/* Future buttons can be added here */}
+          </div>
         </div>
         
-        {showRecords && (
-          <div className="time-records">
-            <h2>RECORDED TIMES</h2>
-            {timeRecords.length === 0 ? (
-              <p className="no-records">No times recorded yet</p>
-            ) : (
-              <>
-                <ul>
-                  {timeRecords.map((record) => (
-                    <li key={record.id}>
-                      <div className="record-main">
-                        <span className="record-time">{record.formatted_time}</span>
-                        <span className="record-date">
-                          {new Date(record.timestamp).toLocaleString()}
-                        </span>
-                      </div>
-                      {record.thought && (
-                        <div className="record-thought">
-                          <span className="thought-label">Thought:</span>
-                          <p className="thought-content">{record.thought}</p>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-                <button 
-                  onClick={handleClearRecords} 
-                  className="clear-records-btn"
-                >
-                  CLEAR ALL
+        <div className="container">
+          <div className="stopwatch-container">
+            <div>
+              <img 
+                src="https://i.imgur.com/TJZJ8xS.jpeg" 
+                className="lebowski-logo" 
+                alt="The Big Lebowski" 
+              />
+            </div>
+            <h1>THE DUDE'S STOPWATCH</h1>
+            
+            <div className="card">
+              {error && <div className="error-message">{error}</div>}
+              <div className="stopwatch-display">{time}</div>
+              <div className="stopwatch-controls">
+                {!isRunning ? (
+                  <button onClick={handleStart} className="start-btn">
+                    START
+                  </button>
+                ) : (
+                  <button onClick={handleStop} className="stop-btn">
+                    STOP
+                  </button>
+                )}
+                <button onClick={handleReset} className="reset-btn">
+                  RESET
                 </button>
-              </>
-            )}
-          </div>
-        )}
-        
-        {showAnalytics && analytics && (
-          <div className="analytics-panel">
-            <h2>THOUGHT INSIGHTS</h2>
-            <div className="analytics-content">
-              <div className="analytics-item">
-                <span className="analytics-label">Total Thoughts:</span>
-                <span className="analytics-value">{analytics.total_thoughts}</span>
+                <button onClick={toggleRecords} className="records-btn">
+                  {showRecords ? 'HIDE TIMES' : 'SHOW TIMES'}
+                </button>
               </div>
               
-              <div className="analytics-item">
-                <span className="analytics-label">Average Length:</span>
-                <span className="analytics-value">{analytics.average_length} characters</span>
-              </div>
-              
-              <div className="analytics-item">
-                <span className="analytics-label">Overall Mood:</span>
-                <span className={`analytics-value mood-${analytics.sentiment}`}>
-                  {analytics.sentiment.charAt(0).toUpperCase() + analytics.sentiment.slice(1)}
-                </span>
-              </div>
-              
-              {analytics.common_words.length > 0 && (
-                <div className="analytics-item">
-                  <span className="analytics-label">Common Words:</span>
-                  <div className="word-cloud">
-                    {analytics.common_words.map(([word, count], index) => (
-                      <span 
-                        key={index} 
-                        className="word-item"
-                        style={{ 
-                          fontSize: `${Math.min(1 + count * 0.2, 1.8)}rem`,
-                          opacity: 0.7 + (index * 0.05)
-                        }}
+              {showRecords && (
+                <div className="time-records">
+                  <h2>RECORDED TIMES</h2>
+                  {timeRecords.length === 0 ? (
+                    <p className="no-records">No times recorded yet</p>
+                  ) : (
+                    <>
+                      <ul>
+                        {timeRecords.map((record) => (
+                          <li key={record.id}>
+                            <div className="record-main">
+                              <span className="record-time">{record.formatted_time}</span>
+                              <span className="record-date">
+                                {new Date(record.timestamp).toLocaleString()}
+                              </span>
+                            </div>
+                            {record.thought && (
+                              <div className="record-thought">
+                                <span className="thought-label">Thought:</span>
+                                <p className="thought-content">{record.thought}</p>
+                              </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                      <button 
+                        onClick={handleClearRecords} 
+                        className="clear-records-btn"
                       >
-                        {word}
-                      </span>
-                    ))}
-                  </div>
+                        CLEAR ALL
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
+            
+            <p className="read-the-docs">
+              THE DUDE ABIDES
+            </p>
           </div>
-        )}
-      </div>
-      
-      <p className="read-the-docs">
-        THE DUDE ABIDES
-      </p>
-
-      {/* Thought Modal */}
-      {showThoughtModal && (
-        <div className="modal-overlay">
-          <div className="thought-modal">
-            <h2>What's on your mind?</h2>
-            <form onSubmit={handleThoughtSubmit}>
-              <textarea
-                ref={thoughtInputRef}
-                value={currentThought}
-                onChange={(e) => setCurrentThought(e.target.value)}
-                placeholder="Share your thoughts..."
-                rows={5}
-              />
-              <div className="modal-buttons">
-                <button 
-                  type="button" 
-                  onClick={handleCloseThoughtModal}
-                  className="modal-cancel-btn"
-                >
-                  SKIP
-                </button>
-                <button 
-                  type="submit"
-                  className="modal-submit-btn"
-                >
-                  SAVE
-                </button>
+          
+          {/* Plant container */}
+          <div className="plant-container">
+            <h2>Your Growth Garden</h2>
+            <p>Plant grows with every 20 seconds recorded</p>
+            <Plant3D totalSeconds={calculateTotalSeconds()} />
+          </div>
+          
+          {/* Thought Modal */}
+          {showThoughtModal && (
+            <div className="modal-overlay">
+              <div className="thought-modal">
+                <h2>What's on your mind?</h2>
+                <form onSubmit={handleThoughtSubmit}>
+                  <textarea
+                    ref={thoughtInputRef}
+                    value={currentThought}
+                    onChange={(e) => setCurrentThought(e.target.value)}
+                    placeholder="Share your thoughts..."
+                    rows={5}
+                  />
+                  <div className="modal-buttons">
+                    <button 
+                      type="button" 
+                      onClick={handleCloseThoughtModal}
+                      className="modal-cancel-btn"
+                    >
+                      SKIP
+                    </button>
+                    <button 
+                      type="submit"
+                      className="modal-submit-btn"
+                    >
+                      SAVE
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
+            </div>
+          )}
         </div>
-      )}
-    </>
+      </div>
+    </div>
   )
 }
 
